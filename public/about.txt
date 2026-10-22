@@ -1,0 +1,1 @@
+edx is a prototype of a modular, mobile-first platform that connects educators, parents and school communities across South Africa. This demonstration uses fictional data only. The product team must complete privacy, safety, school permissions, accessibility and real-world connectivity work before use with children.
