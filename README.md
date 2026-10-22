@@ -18,18 +18,19 @@ A mobile-first, installable school-to-home communication concept for South Afric
 
 ## Stack
 
-React 19 · TypeScript · Vite · Motion · Three.js · Phosphor Icons · vite-plugin-pwa · Oxlint · Oxfmt · Vitest. Styling is custom CSS inspired by EasyUI's animated, accessible patterns and the supplied visual references. We avoid adding component packages solely for effects.
+Next.js 16 App Router · React 19 · TypeScript 7 · pnpm 12 · Motion · Three.js · Phosphor Icons · native web app manifest + service worker · Oxlint · Oxfmt · Vitest. Styling is custom CSS inspired by EasyUI's animated, accessible patterns and the supplied visual references. We avoid adding component packages solely for effects.
 
 ```bash
-npm install
-npm run dev
-npm run lint
-npm run test
-npm run build
-npm run format:check
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm format:check
 ```
 
-Node.js 22.12+ is recommended. Icon PNGs are generated from `scripts/generate-icons.mjs` during `predev` and `prebuild` with no image generation dependency.
+Node.js 22.13+ is required by pnpm 12 (Node.js 24 recommended). Icon PNGs are generated from `scripts/generate-icons.mjs` using the `generate:icons` script before dev and build with no image generation dependency.
 
 ## Architecture
 
@@ -37,7 +38,9 @@ Node.js 22.12+ is recommended. Icon PNGs are generated from `scripts/generate-ic
 - `src/components/Orb.tsx` — lazy Three.js visual, pointer tracking, reduced-motion fallback
 - `src/data.ts` — fictional records, date helpers and local demo state
 - `src/styles.css` — visual system, iOS-style bottom navigation and responsive themes
-- `vite.config.ts` — Vite and offline-capable PWA configuration
+- `app/` — Next.js App Router layout, page, manifest and accessible loading fallbacks
+- `app/ClientExperience.tsx` — browser-only demo shell and service worker registration
+- `public/sw.js` — offline app-shell caching; no private or learner record caching
 - `scripts/generate-icons.mjs` — deterministic icon generator
 
 ## Before using edx in actual schools
@@ -53,7 +56,7 @@ Node.js 22.12+ is recommended. Icon PNGs are generated from `scripts/generate-ic
 
 ## PWA notes
 
-The service worker caches the static app shell and bundled assets to enable reopening previously visited pages offline. Demo submissions are local only. This does **not** provide offline-to-server synchronisation. Install support varies between Chrome, Android and iOS Safari. Use *Share → Add to Home Screen* on supported Apple devices.
+The standalone service worker caches the public demo shell and previously fetched framework assets to enable reopening previously visited pages offline. Demo submissions are local only. This does **not** provide offline-to-server synchronisation. Install support varies between Chrome, Android and iOS Safari. Use *Share → Add to Home Screen* on supported Apple devices.
 
 ## Accessibility
 

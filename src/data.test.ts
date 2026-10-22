@@ -14,7 +14,9 @@ describe("fictional school demo", () => {
   it("matches calendar events only on the selected day", () => {
     const state = initialState();
     const day = state.events[0].date;
-    expect(eventsForDate(state.events, day).some((event) => event.id === state.events[0].id)).toBe(true);
+    expect(eventsForDate(state.events, day).some((event) => event.id === state.events[0].id)).toBe(
+      true,
+    );
     expect(eventsForDate(state.events, "1990-01-01")).toEqual([]);
   });
 });
