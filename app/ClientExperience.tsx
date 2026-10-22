@@ -29,7 +29,7 @@ export default function ClientExperience() {
               "script[src],link[rel=stylesheet],link[rel=preload]",
             ),
           )
-            .map((element) => element instanceof HTMLScriptElement ? element.src : element.href)
+            .map((element) => (element instanceof HTMLScriptElement ? element.src : element.href))
             .filter((url) => url.startsWith(window.location.origin + "/_next/static/"));
           worker.active?.postMessage({ type: "PREFETCH_DEMO_SHELL", assets });
         })

@@ -24,24 +24,14 @@ jobs:
       - name: Install pinned pnpm
         run: npm install --global pnpm@12.14.0 --no-audit --no-fund
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Oxlint
         run: pnpm lint
+      - name: Oxfmt
+        run: pnpm run format:check
       - name: TypeScript
         run: pnpm typecheck
       - name: Vitest
         run: pnpm test
       - name: Next.js production build
         run: pnpm build
-      - name: Format, verify and emit generated source snapshots
-        run: |
-          pnpm run format
-          pnpm run format:check
-          echo "__EDX_LOCK_BEGIN__"
-          cat pnpm-lock.yaml
-          echo "__EDX_LOCK_END__"
-          git diff --name-only -- app src scripts next.config.ts | while IFS= read -r file; do
-            echo "__EDX_FILE_BEGIN__${file}"
-            cat "$file"
-            echo "__EDX_FILE_END__${file}"
-          done
