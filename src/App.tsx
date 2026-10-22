@@ -425,7 +425,7 @@ export default function App() {
           >
             <BrandMark className="mark" />
             <span className="brand-lockup">
-              <span className="brand-name">kinlo</span>
+              <span className="brand-name">Kinlo</span>
               <span className="brand-tagline">School, together</span>
             </span>
           </button>

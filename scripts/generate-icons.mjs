@@ -27,7 +27,7 @@ const socialCard = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height=
   <rect width="1200" height="630" fill="#f5f7f6"/>
   <rect x="800" width="400" height="630" fill="#e8f3ed"/>
   <g transform="translate(804 110) scale(2.7)">${symbol}</g>
-  <text x="90" y="215" fill="#172d2a" font-family="sans-serif" font-size="90" font-weight="700" letter-spacing="-5">kinlo</text>
+  <text x="90" y="215" fill="#172d2a" font-family="sans-serif" font-size="90" font-weight="700" letter-spacing="-5">Kinlo</text>
   <text x="94" y="326" fill="#172d2a" font-family="sans-serif" font-size="62" font-weight="600" letter-spacing="-2">School, together.</text>
   <text x="96" y="394" fill="#526660" font-family="sans-serif" font-size="27">A little closer to every school day.</text>
   <text x="96" y="536" fill="#526660" font-family="sans-serif" font-size="20">Made for school communities in South Africa.</text>
