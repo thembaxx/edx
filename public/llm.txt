@@ -1,2 +1,2 @@
-# edx: AI-readable overview
-See /llms.txt for a full overview of the fictional edx public-school communication demo and its production-readiness limits.
+# Kinlo: AI-readable overview
+See /llms.txt for a full overview of the fictional Kinlo public-school communication demo and its production-readiness limits.

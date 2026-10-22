@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><linearGradient id="a" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#52d9ff"/><stop offset=".48" stop-color="#4f98ff"/><stop offset="1" stop-color="#a239f5"/></linearGradient><radialGradient id="b" cx=".25" cy=".08" r="1"><stop stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="128" height="128" rx="38" fill="#f8faff"/><circle cx="64" cy="64" r="49" fill="url(#a)"/><circle cx="64" cy="64" r="49" fill="url(#b)"/><path d="M40 70c16 6 33 2 50-17" stroke="#fff" opacity=".45" stroke-width="8" stroke-linecap="round" fill="none"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <circle cx="64" cy="27" r="15" fill="#F0B43C"/>
+  <path d="M14 40C14 29 25 23 34 29L52 42C59 47 63 52 63 60V94C63 100 60 103 55 106L36 117C31 120 26 117 26 111V108C26 105 25 104 22 104C17 103 14 99 14 93V40Z" fill="#2563EB"/>
+  <path d="M14 53C14 64 32 69 47 77C57 82 63 87 62 96C61 100 58 103 55 105L36 117C31 120 26 117 26 111V108C26 105 25 104 22 104C17 103 14 99 14 93V53Z" fill="#73A4FA"/>
+  <path d="M114 40C114 29 103 23 94 29L76 42C69 47 65 52 65 60V94C65 100 68 103 73 106L92 117C97 120 102 117 102 111V108C102 105 103 104 106 104C111 103 114 99 114 93V40Z" fill="#087F68"/>
+  <path d="M114 53C114 64 96 69 81 77C71 82 65 87 66 96C67 100 70 103 73 105L92 117C97 120 102 117 102 111V108C102 105 103 104 106 104C111 103 114 99 114 93V53Z" fill="#57B99F"/>
+</svg>

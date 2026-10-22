@@ -1,5 +1,6 @@
 node_modules/
 .next/
+next-env.d.ts
 out/
 dist/
 coverage/
@@ -12,3 +13,6 @@ coverage/
 *.log
 public/icons/*.png
 public/apple-touch-icon.png
+public/og.png
+test-results/
+playwright-report/

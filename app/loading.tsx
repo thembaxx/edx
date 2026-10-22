@@ -1,8 +1,9 @@
 export default function Loading() {
   return (
     <main className="launch-screen" aria-live="polite">
-      <span className="launch-symbol" aria-hidden="true" />
-      <span>Opening edx…</span>
+      <BrandMark className="launch-symbol" />
+      <span>Opening Kinlo…</span>
     </main>
   );
 }
+import BrandMark from "../src/components/BrandMark";
