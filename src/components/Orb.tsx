@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 
 type OrbProps = { size?: "hero" | "small"; interactive?: boolean; reducedMotion?: boolean };
