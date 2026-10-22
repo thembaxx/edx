@@ -2,20 +2,26 @@
 
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
+import BrandMark from "../src/components/BrandMark";
 
-const EdxApp = dynamic(() => import("../src/App"), {
+const SchoolApp = dynamic(() => import("../src/App"), {
   ssr: false,
   loading: () => (
-    <main className="launch-screen" aria-live="polite" aria-label="Loading edx">
-      <span className="launch-symbol" aria-hidden="true" />
-      <span>Making your school day a little brighter…</span>
+    <main className="launch-screen" aria-live="polite" aria-label="Loading Kinlo">
+      <BrandMark className="launch-symbol" />
+      <span>Opening your school workspace…</span>
     </main>
   ),
 });
 
 export default function ClientExperience() {
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+    if (
+      process.env.NODE_ENV !== "production" ||
+      !("serviceWorker" in navigator) ||
+      !window.isSecureContext
+    )
+      return;
     let cancelled = false;
 
     const register = () => {
@@ -47,5 +53,5 @@ export default function ClientExperience() {
     };
   }, []);
 
-  return <EdxApp />;
+  return <SchoolApp />;
 }

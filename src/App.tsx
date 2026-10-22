@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
@@ -24,14 +31,13 @@ import {
   PaperPlaneTilt,
   Plus,
   ShieldCheck,
-  Sparkle,
   SquaresFour,
   Sun,
   UsersThree,
   WifiSlash,
   X,
 } from "@phosphor-icons/react";
-import Orb from "./components/Orb";
+import BrandMark from "./components/BrandMark";
 import {
   categoryColors,
   dayLabel,
@@ -81,30 +87,22 @@ const storage = {
     }
   },
 };
-const categoryIcon = (category: Category) =>
-  category === "Mathematics"
-    ? "∑"
-    : category === "English"
-      ? "Aa"
-      : category === "Sport"
-        ? "↗"
-        : category === "Arts"
-          ? "✳"
-          : category === "Natural Sciences"
-            ? "✺"
-            : "✦";
+const categoryInitial = (category: Category) =>
+  (
+    {
+      Mathematics: "M",
+      English: "E",
+      Sport: "PE",
+      Arts: "A",
+      "Natural Sciences": "Sc",
+      General: "G",
+    } as const
+  )[category];
 function Chip({ category }: { category: Category }) {
   return (
     <span className={`subject-chip tone-${categoryColors[category]}`}>
-      <span className="subject-symbol">{categoryIcon(category)}</span>
+      <span className="subject-symbol">{categoryInitial(category)}</span>
       {category}
-    </span>
-  );
-}
-function Mark({ small = false }: { small?: boolean }) {
-  return (
-    <span className={`mark ${small ? "mark-small" : ""}`} aria-hidden="true">
-      <span className="mark-shine" />
     </span>
   );
 }
@@ -134,7 +132,7 @@ function Empty({ title, body }: { title: string; body: string }) {
   return (
     <div className="empty">
       <span className="empty-icon">
-        <Sparkle size={25} weight="duotone" />
+        <Info size={24} />
       </span>
       <h3>{title}</h3>
       <p>{body}</p>
@@ -164,6 +162,24 @@ function Toggle({
   );
 }
 
+function keepDialogFocus(event: ReactKeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== "Tab") return;
+  const controls = Array.from(
+    event.currentTarget.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+    ),
+  ).filter((element) => element.getClientRects().length > 0);
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last?.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first?.focus();
+  }
+}
+
 export default function App() {
   const motionPreference = useReducedMotion();
   const [role, setRole] = useState<Role>(() =>
@@ -191,6 +207,8 @@ export default function App() {
   const [activeThread, setActiveThread] = useState("t1");
   const [draft, setDraft] = useState("");
   const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  const [currentDate] = useState(() => new Date());
+  const onboardingRef = useRef<HTMLDialogElement>(null);
   const [selectedDay, setSelectedDay] = useState(today);
   const [online, setOnline] = useState(() => navigator.onLine);
   const [notice, setNotice] = useState("");
@@ -215,6 +233,9 @@ export default function App() {
     saveState(state);
   }, [state]);
   useEffect(() => {
+    if (onboardStep >= 0 && !onboardingRef.current?.open) onboardingRef.current?.showModal();
+  }, [onboardStep]);
+  useEffect(() => {
     storage.set("edx-role", role);
   }, [role]);
   useEffect(() => {
@@ -229,7 +250,7 @@ export default function App() {
     const apply = () => {
       const actual = theme === "system" ? (media.matches ? "dark" : "light") : theme;
       document.documentElement.dataset.theme = actual;
-      const color = actual === "dark" ? "#15181f" : "#e5f2ff";
+      const color = actual === "dark" ? "#12201c" : "#f5f7f6";
       let meta = document.querySelector('meta[name="theme-color"]:not([media])');
       if (!meta) {
         meta = document.createElement("meta");
@@ -300,12 +321,6 @@ export default function App() {
         ),
     [state.updates, filter, modules.assignments],
   );
-  const greeting =
-    new Date().getHours() < 12
-      ? "Good morning"
-      : new Date().getHours() < 17
-        ? "Good afternoon"
-        : "Good evening";
   const navigate = (target: View) => {
     setView(target);
     setFilter("All");
@@ -401,23 +416,22 @@ export default function App() {
 
   return (
     <div className={`app-shell ${reducedMotion ? "reduce-extra-motion" : ""}`}>
-      <div className="ambient ambient-one" aria-hidden="true" />
-      <div className="ambient ambient-two" aria-hidden="true" />
       <div className="page-wrap">
         <header className="topbar">
           <button
             className="brand interactive"
-            aria-label="edx, go home"
+            aria-label="Kinlo, go home"
             onClick={() => navigate("home")}
           >
-            <Mark />
-            <span>
-              edx<span className="brand-dot">.</span>
+            <BrandMark className="mark" />
+            <span className="brand-lockup">
+              <span className="brand-name">kinlo</span>
+              <span className="brand-tagline">School, together</span>
             </span>
           </button>
           <div className="topbar-right">
             <span className="demo-label">
-              <span className="demo-pulse" /> Interactive demo
+              <span className="demo-pulse" /> Demo workspace
             </span>
             <button
               className="icon-button desktop-only"
@@ -444,10 +458,10 @@ export default function App() {
           </div>
         </header>
         {!online && (
-          <div className="offline-strip" role="status">
+          <output className="offline-strip">
             <WifiSlash size={16} /> You are offline. Previously loaded pages and fictional changes
             are still available on this device.
-          </div>
+          </output>
         )}
         <div className="workspace">
           <aside className="sidebar">
@@ -482,9 +496,9 @@ export default function App() {
               <ArrowRight size={16} />
             </button>
             <div className="sidebar-bottom">
-              <Mark small />
+              <BrandMark className="mark mark-small" />
               <div>
-                <strong>Better days, together.</strong>
+                <strong>School, together.</strong>
                 <p>Made for school communities in South Africa.</p>
               </div>
             </div>
@@ -501,45 +515,23 @@ export default function App() {
               >
                 {view === "home" && (
                   <div className="home-view">
-                    <div className="hero-grid">
-                      <div className="hero-copy">
-                        <div className="eyebrow hero-eyebrow">
-                          <span className="eyebrow-star">✳</span> YOUR SCHOOL, A LITTLE CLOSER
-                        </div>
-                        <h1>
-                          {greeting},<br />
-                          <span className="gradient-text">
-                            {role === "parent" ? "Nomsa" : "Teacher"}!
-                          </span>
-                        </h1>
-                        <p className="hero-description">
+                    <div className="home-heading">
+                      <div>
+                        <p className="eyebrow">Bluebird Primary</p>
+                        <h1>{role === "parent" ? "Your school day" : "Class overview"}</h1>
+                        <p className="page-description">
                           {role === "parent"
-                            ? "Every little school moment, all in one happy place. Here's what's happening in Thando's class."
-                            : "Less admin, more teaching. Here's everything your Grade 4 community needs today."}
+                            ? "Updates, homework and dates for Thando’s class."
+                            : "Manage updates and conversations for your Grade 4 class."}
                         </p>
-                        <div className="hero-actions">
-                          <button
-                            className="primary-button"
-                            onClick={() => navigate(role === "parent" ? "updates" : "inbox")}
-                          >
-                            {role === "parent" ? "See latest updates" : "Open conversations"}
-                            <ArrowRight size={19} />
-                          </button>
-                          <button className="quiet-button" onClick={() => navigate("calendar")}>
-                            View calendar <ArrowRight size={16} />
-                          </button>
-                        </div>
                       </div>
-                      <div className="hero-art">
-                        <div className="hero-halo" aria-hidden="true" />
-                        <Orb reducedMotion={reducedMotion} />
-                        <span className="float-tag tag-one">
-                          <Sparkle weight="fill" size={15} /> A brighter school day
-                        </span>
-                        <span className="float-tag tag-two">
-                          <CheckCircle size={17} weight="fill" /> In the loop
-                        </span>
-                      </div>
+                      <button
+                        className="primary-button"
+                        onClick={() => (role === "parent" ? navigate("updates") : setCompose(true))}
+                      >
+                        {role === "parent" ? "Read updates" : "Share an update"}
+                        {role === "parent" ? <ArrowRight size={17} /> : <Plus size={17} />}
+                      </button>
                     </div>
                     <div className="context-row">
                       <div className="learner-summary">
@@ -548,7 +540,7 @@ export default function App() {
                         </div>
                         <div>
                           <span className="eyebrow">
-                            YOUR ${role === "parent" ? "LEARNER" : "CLASS"}
+                            YOUR {role === "parent" ? "LEARNER" : "CLASS"}
                           </span>
                           <strong>
                             {role === "parent" ? "Thando M. · Grade 4" : "Grade 4 · Room 12"}
@@ -561,7 +553,7 @@ export default function App() {
                           weekday: "long",
                           day: "numeric",
                           month: "long",
-                        }).format(new Date())}
+                        }).format(currentDate)}
                       </div>
                     </div>
                     <div className="stat-grid">
@@ -579,13 +571,10 @@ export default function App() {
                             </span>
                           </div>
                           <strong className="stat-value">
-                            {state.updates
-                              .filter((u) => u.kind === "Homework")
-                              .length.toString()
-                              .padStart(2, "0")}
+                            {state.updates.filter((u) => u.kind === "Homework").length}
                           </strong>
-                          <div className="stat-title">Homework notes</div>
-                          <p>Little steps, big progress</p>
+                          <div className="stat-title">Homework</div>
+                          <p>For your class</p>
                         </button>
                       )}
                       {modules.events && (
@@ -601,11 +590,9 @@ export default function App() {
                               <ArrowRight size={17} />
                             </span>
                           </div>
-                          <strong className="stat-value">
-                            {String(sortedEvents.length).padStart(2, "0")}
-                          </strong>
+                          <strong className="stat-value">{sortedEvents.length}</strong>
                           <div className="stat-title">Upcoming dates</div>
-                          <p>Never miss a school moment</p>
+                          <p>On the school calendar</p>
                         </button>
                       )}
                       <button
@@ -620,16 +607,15 @@ export default function App() {
                             <ArrowRight size={17} />
                           </span>
                         </div>
-                        <strong className="stat-value">{String(unread).padStart(2, "0")}</strong>
+                        <strong className="stat-value">{unread}</strong>
                         <div className="stat-title">Unread updates</div>
-                        <p>All the news, in one place</p>
+                        <p>From your school</p>
                       </button>
                     </div>
                     <div className="dashboard-grid">
                       <section className="panel updates-panel">
                         <SectionHeading
-                          eyebrow="STAY IN THE KNOW"
-                          title="The latest from class"
+                          title="Latest updates"
                           action={
                             <button className="text-link" onClick={() => navigate("updates")}>
                               View all <ArrowRight size={16} />
@@ -648,7 +634,7 @@ export default function App() {
                               }}
                             >
                               <span className={`mini-icon tone-${categoryColors[item.category]}`}>
-                                {categoryIcon(item.category)}
+                                {categoryInitial(item.category)}
                               </span>
                               <span className="mini-content">
                                 <strong>{item.title}</strong>
@@ -665,8 +651,7 @@ export default function App() {
                       {modules.events && (
                         <section className="panel event-panel">
                           <SectionHeading
-                            eyebrow="ON THE HORIZON"
-                            title="Coming up next"
+                            title="Next on the calendar"
                             action={
                               <button className="text-link" onClick={() => navigate("calendar")}>
                                 Calendar <ArrowRight size={16} />
@@ -717,11 +702,11 @@ export default function App() {
                   <section className="subpage">
                     <div className="page-heading">
                       <div>
-                        <p className="eyebrow">EVERYTHING IN ITS PLACE</p>
+                        <p className="eyebrow">Bluebird Primary · Grade 4</p>
                         <h1>
-                          Class <span className="gradient-text">updates</span>
+                          Class <span className="page-title-emphasis">updates</span>
                         </h1>
-                        <p>From small reminders to big milestones, you're in the loop.</p>
+                        <p>Notices, homework and assessments from your class.</p>
                       </div>
                       {role === "teacher" && (
                         <button className="primary-button" onClick={() => setCompose(true)}>
@@ -744,8 +729,8 @@ export default function App() {
                     <div className="updates-list">
                       {filteredUpdates.length === 0 ? (
                         <Empty
-                          title="A little quiet here"
-                          body="No updates in this category yet. Try another filter."
+                          title="No updates in this category"
+                          body="Choose another subject or update type."
                         />
                       ) : (
                         filteredUpdates.map((item) => (
@@ -799,9 +784,9 @@ export default function App() {
                     <section className="subpage">
                       <div className="page-heading">
                         <div>
-                          <p className="eyebrow">ONE DAY AT A TIME</p>
+                          <p className="eyebrow">Bluebird Primary · Grade 4</p>
                           <h1>
-                            School <span className="gradient-text">calendar</span>
+                            School <span className="page-title-emphasis">calendar</span>
                           </h1>
                           <p>Every assessment, activity and special day at a glance.</p>
                         </div>
@@ -877,20 +862,21 @@ export default function App() {
                               ))
                             ) : (
                               <Empty
-                                title="Room to breathe"
-                                body="Nothing planned here yet. Enjoy the little pause."
+                                title="No events on this day"
+                                body="Select another date to see school events and due dates."
                               />
                             )}
                           </div>
                         </div>
                       </div>
                       <section className="upcoming-section">
-                        <SectionHeading eyebrow="LOOKING AHEAD" title="Upcoming milestones" />
+                        <SectionHeading title="Upcoming dates" />
                         <div className="upcoming-grid">
                           {sortedEvents.slice(0, 6).map((event) => (
                             <button
                               className="upcoming-card"
                               key={event.id}
+                              aria-label={`${event.title}, ${dayLabel(event.date)}`}
                               onClick={() => {
                                 setSelectedDay(event.date);
                                 setCalendarMonth(new Date(event.date + "T12:00:00"));
@@ -921,11 +907,11 @@ export default function App() {
                   <section className="subpage inbox-page">
                     <div className="page-heading">
                       <div>
-                        <p className="eyebrow">BETTER TOGETHER</p>
+                        <p className="eyebrow">Bluebird Primary · Grade 4</p>
                         <h1>
-                          School <span className="gradient-text">conversations</span>
+                          School <span className="page-title-emphasis">conversations</span>
                         </h1>
-                        <p>Thoughtful communication, without the noise.</p>
+                        <p>Messages with your educators and school office.</p>
                       </div>
                     </div>
                     {!modules.messages ? (
@@ -1071,16 +1057,16 @@ export default function App() {
         </div>
       </nav>
       {notice && (
-        <div className="toast" role="status">
+        <output className="toast">
           <CheckCircle size={18} weight="fill" />
           {notice}
-        </div>
+        </output>
       )}
       <AnimatePresence>
         {settings && (
           <Dialog title="Settings" onClose={() => setSettings(false)} reducedMotion={reducedMotion}>
             <div className="settings-body">
-              <p className="modal-intro">Make edx feel just right for you.</p>
+              <p className="modal-intro">Make Kinlo feel just right for you.</p>
               <p className="settings-label">APPEARANCE</p>
               <div className="theme-picker" aria-label="Theme preference">
                 {(
@@ -1104,7 +1090,7 @@ export default function App() {
               <div className="settings-row">
                 <div>
                   <strong>Reduce extra motion</strong>
-                  <small>Use calm transitions and a static orb</small>
+                  <small>Turn off decorative motion and page transitions</small>
                 </div>
                 <Toggle checked={lessMotion} onChange={setLessMotion} label="Reduce extra motion" />
               </div>
@@ -1115,14 +1101,14 @@ export default function App() {
                   aria-pressed={role === "parent"}
                   onClick={() => switchRole("parent")}
                 >
-                  <span>👋</span> Parent
+                  <UsersThree size={17} /> Parent
                 </button>
                 <button
                   className={role === "teacher" ? "active" : ""}
                   aria-pressed={role === "teacher"}
                   onClick={() => switchRole("teacher")}
                 >
-                  <span>✏️</span> Educator
+                  <GraduationCap size={17} /> Educator
                 </button>
               </div>
               <div className="settings-row">
@@ -1143,7 +1129,7 @@ export default function App() {
               <div className="settings-row">
                 <div>
                   <strong>Replay welcome tour</strong>
-                  <small>See how to get around edx</small>
+                  <small>See how to get around Kinlo</small>
                 </div>
                 <button
                   className="settings-link"
@@ -1158,7 +1144,7 @@ export default function App() {
               <p className="settings-label">DEVICE & PRIVACY</p>
               <div className="settings-row">
                 <div>
-                  <strong>Install edx</strong>
+                  <strong>Install Kinlo</strong>
                   <small>Add this web app to your home screen</small>
                 </div>
                 <button className="settings-link" onClick={installApp}>
@@ -1236,22 +1222,24 @@ export default function App() {
           />
         )}
         {onboardStep >= 0 && (
-          <div className="onboard-backdrop" role="presentation">
-            <div
-              className="onboard-dialog"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Welcome to edx"
-            >
+          <dialog
+            ref={onboardingRef}
+            className="onboard-backdrop"
+            aria-label="Welcome to Kinlo"
+            onCancel={closeOnboarding}
+            onKeyDown={keepDialogFocus}
+          >
+            <div className="onboard-dialog">
               <button className="onboard-skip" onClick={closeOnboarding}>
                 Skip tour <X size={16} />
               </button>
               <div className="onboard-visual">
-                <span className="onboard-spark spark-a">✳</span>
-                <Orb size="small" interactive reducedMotion={reducedMotion} />
-                <span className="onboard-spark spark-b">✦</span>
+                <BrandMark className="onboard-mark" />
               </div>
-              <div className="onboard-dots" aria-label={`Step ${onboardStep + 1} of 3`}>
+              <p className="sr-only" aria-live="polite">
+                Step {onboardStep + 1} of 3
+              </p>
+              <div className="onboard-dots" aria-hidden="true">
                 {[0, 1, 2].map((step) => (
                   <span key={step} className={step === onboardStep ? "active" : ""} />
                 ))}
@@ -1266,23 +1254,23 @@ export default function App() {
                   className="onboard-copy"
                 >
                   <span className="eyebrow">
-                    {["HELLO, THERE", "THE IMPORTANT THINGS", "MAKE IT YOURS"][onboardStep]}
+                    {["WELCOME TO KINLO", "UPDATES AND DATES", "YOUR WORKSPACE"][onboardStep]}
                   </span>
                   <h2>
                     {
                       [
-                        "School feels closer, together.",
-                        "Less searching. More knowing.",
-                        "Your school day, your way.",
+                        "Your school, in one place.",
+                        "Keep up with your class.",
+                        "Choose your view.",
                       ][onboardStep]
                     }
                   </h2>
                   <p>
                     {
                       [
-                        "A calmer, friendlier place for educators and families to stay connected.",
-                        "Homework, dates and conversations each have their own happy place.",
-                        "Choose a parent or educator view. Everything here is fictional until a school is connected.",
+                        "Find class updates, homework and upcoming dates from Bluebird Primary.",
+                        "Mark updates as read, check due dates and open school conversations.",
+                        "Try the parent or educator experience. This demo saves practice changes on your device.",
                       ][onboardStep]
                     }
                   </p>
@@ -1319,12 +1307,12 @@ export default function App() {
                     onboardStep === 2 ? closeOnboarding() : setOnboardStep((step) => step + 1)
                   }
                 >
-                  {onboardStep === 2 ? "Explore edx" : "Continue"}
+                  {onboardStep === 2 ? "Explore Kinlo" : "Continue"}
                   <ArrowRight size={19} />
                 </button>
               </div>
             </div>
-          </div>
+          </dialog>
         )}
       </AnimatePresence>
     </div>
@@ -1393,14 +1381,24 @@ function Dialog({
   children: React.ReactNode;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const previousFocus =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const dialog = dialogRef.current;
+    dialog?.showModal();
     closeRef.current?.focus();
-    return () => previousFocus?.focus();
+    return () => {
+      dialog?.close();
+      previousFocus?.focus();
+    };
   }, []);
   return (
-    <motion.div
+    <motion.dialog
+      ref={dialogRef}
+      aria-label={title}
+      onCancel={onClose}
+      onKeyDown={keepDialogFocus}
       className="modal-backdrop"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -1411,9 +1409,6 @@ function Dialog({
       transition={{ duration: reducedMotion ? 0 : 0.2 }}
     >
       <motion.div
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
         className="modal-panel"
         initial={reducedMotion ? false : { y: 28, scale: 0.97 }}
         animate={{ y: 0, scale: 1 }}
@@ -1427,7 +1422,7 @@ function Dialog({
       >
         <div className="modal-head">
           <div>
-            <p className="eyebrow">EDX WORKSPACE</p>
+            <p className="eyebrow">KINLO WORKSPACE</p>
             <h2>{title}</h2>
           </div>
           <button
@@ -1441,7 +1436,7 @@ function Dialog({
         </div>
         {children}
       </motion.div>
-    </motion.div>
+    </motion.dialog>
   );
 }
 function ComposeDialog({

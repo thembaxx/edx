@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { DM_Mono, Mulish } from "next/font/google";
 import "../src/styles.css";
+
+const mulish = Mulish({ subsets: ["latin"], variable: "--font-mulish", display: "swap" });
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-dm-mono",
+  display: "swap",
+});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -12,30 +21,30 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  applicationName: "edx",
+  applicationName: "Kinlo",
   title: {
-    default: "edx — School, together",
-    template: "%s | edx",
+    default: "Kinlo — School, together",
+    template: "%s | Kinlo",
   },
   description:
-    "edx brings South African schools and families together. Keep track of school updates, homework, calendars and conversations in one calm place.",
+    "Kinlo brings South African schools and families together. Keep track of school updates, homework, calendars and conversations in one calm place.",
   openGraph: {
-    title: "edx — School, together",
+    title: "Kinlo — School, together",
     description: "A calmer, friendlier connection between schools and home.",
-    images: ["/og.svg"],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Kinlo — School, together" }],
     type: "website",
     locale: "en_ZA",
   },
   twitter: {
     card: "summary_large_image",
-    title: "edx — School, together",
+    title: "Kinlo — School, together",
     description: "A calmer, friendlier connection between schools and home.",
-    images: ["/og.svg"],
+    images: ["/og.png"],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "edx",
+    title: "Kinlo",
   },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
@@ -49,22 +58,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#e5f2ff" },
-    { media: "(prefers-color-scheme: dark)", color: "#15181f" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#12201c" },
   ],
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-ZA">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en-ZA" className={`${mulish.variable} ${dmMono.variable}`}>
       <body>{children}</body>
     </html>
   );
