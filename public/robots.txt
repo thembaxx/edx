@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Student data and authenticated app content must not be indexed when added.

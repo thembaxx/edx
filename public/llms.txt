@@ -1,0 +1,13 @@
+# edx — School, together
+> edx is a South African school-to-home communication app concept for grades 1–8.
+
+This public build is an interactive demonstration using fictional school, educator, parent and pupil data. There is no real authentication, real-time messaging, authoritative school calendar or secure student-record storage in this release.
+
+Key product areas:
+- Home: school digest, homework and at-a-glance dates
+- Updates: notices, subject updates and assignments
+- Calendar: school events, tests and homework
+- Inbox: school-family conversations and staff community concept
+
+edx should not be used to store real learner information until school onboarding, access control, secure hosted storage, data protection review and operational controls are complete.
+For background see /about.txt.
