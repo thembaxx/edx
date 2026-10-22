@@ -2,7 +2,7 @@ name: Quality checks
 
 on:
   push:
-    branches: [main, "feat/nextjs-pnpm-migration-20261022"]
+    branches: [main]
   pull_request:
 
 permissions:

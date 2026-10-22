@@ -21,12 +21,13 @@ A mobile-first, installable school-to-home communication concept for South Afric
 Next.js 16 App Router · React 19 · TypeScript 7 · pnpm 12 · Motion · Three.js · Phosphor Icons · native web app manifest + service worker · Oxlint · Oxfmt · Vitest. Styling is custom CSS inspired by EasyUI's animated, accessible patterns and the supplied visual references. We avoid adding component packages solely for effects.
 
 ```bash
-npm install
-npm run dev
-npm run lint
-npm run test
-npm run build
-npm run format:check
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm format:check
 ```
 
 Node.js 22.13+ is required by pnpm 12 (Node.js 24 recommended). Icon PNGs are generated from `scripts/generate-icons.mjs` using the `generate:icons` script before dev and build with no image generation dependency.
@@ -37,7 +38,9 @@ Node.js 22.13+ is required by pnpm 12 (Node.js 24 recommended). Icon PNGs are ge
 - `src/components/Orb.tsx` — lazy Three.js visual, pointer tracking, reduced-motion fallback
 - `src/data.ts` — fictional records, date helpers and local demo state
 - `src/styles.css` — visual system, iOS-style bottom navigation and responsive themes
-- `app/` — Next.js App Router layout, page, manifest and accessible loading fallbacks\n- `app/ClientExperience.tsx` — browser-only demo shell and service worker registration\n- `public/sw.js` — offline app-shell caching; no private or learner record caching
+- `app/` — Next.js App Router layout, page, manifest and accessible loading fallbacks
+- `app/ClientExperience.tsx` — browser-only demo shell and service worker registration
+- `public/sw.js` — offline app-shell caching; no private or learner record caching
 - `scripts/generate-icons.mjs` — deterministic icon generator
 
 ## Before using edx in actual schools
