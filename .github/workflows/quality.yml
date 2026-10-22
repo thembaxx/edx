@@ -33,3 +33,15 @@ jobs:
         run: pnpm test
       - name: Next.js production build
         run: pnpm build
+      - name: Format, verify and emit generated source snapshots
+        run: |
+          pnpm run format
+          pnpm run format:check
+          echo "__EDX_LOCK_BEGIN__"
+          cat pnpm-lock.yaml
+          echo "__EDX_LOCK_END__"
+          git diff --name-only -- app src scripts next.config.ts | while IFS= read -r file; do
+            echo "__EDX_FILE_BEGIN__${file}"
+            cat "$file"
+            echo "__EDX_FILE_END__${file}"
+          done
