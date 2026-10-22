@@ -73,8 +73,16 @@ export default function App() {
   const [notice, setNotice] = useState("");
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [modules, setModules] = useState<Record<ModuleKey, boolean>>(() => {
-    try { return { assignments: true, events: true, messages: true, community: true, ...JSON.parse(storage.get("edx-modules", "{}")) as Record<ModuleKey, boolean> }; }
-    catch { return { assignments: true, events: true, messages: true, community: true }; }
+    try {
+      const stored: unknown = JSON.parse(storage.get("edx-modules", "{}"));
+      const saved = stored && typeof stored === "object" ? stored as Partial<Record<ModuleKey, unknown>> : {};
+      return {
+        assignments: typeof saved.assignments === "boolean" ? saved.assignments : true,
+        events: typeof saved.events === "boolean" ? saved.events : true,
+        messages: typeof saved.messages === "boolean" ? saved.messages : true,
+        community: typeof saved.community === "boolean" ? saved.community : true,
+      };
+    } catch { return { assignments: true, events: true, messages: true, community: true }; }
   });
 
   useEffect(() => { saveState(state); }, [state]);
