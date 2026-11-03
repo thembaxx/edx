@@ -196,9 +196,11 @@ svg {
   border-radius: 8px;
   background: var(--surface);
 }
-.icon-button:hover {
-  background: var(--input);
-  border-color: var(--border);
+@media (hover: hover) and (pointer: fine) {
+  .icon-button:hover {
+    background: var(--input);
+    border-color: var(--border);
+  }
 }
 .icon-button.icon-small {
   width: 36px;
@@ -295,8 +297,10 @@ svg {
   font-weight: 700;
   text-align: left;
 }
-.side-nav-item:hover {
-  background: var(--input);
+@media (hover: hover) and (pointer: fine) {
+  .side-nav-item:hover {
+    background: var(--input);
+  }
 }
 .side-nav-item.selected {
   color: var(--accent);
@@ -407,9 +411,11 @@ svg {
   font-weight: 800;
   white-space: nowrap;
 }
-.primary-button:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
+@media (hover: hover) and (pointer: fine) {
+  .primary-button:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
 }
 .quiet-button,
 .text-link {
@@ -424,10 +430,12 @@ svg {
   font-size: 12px;
   font-weight: 800;
 }
-.quiet-button:hover,
-.text-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+@media (hover: hover) and (pointer: fine) {
+  .quiet-button:hover,
+  .text-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 .context-row {
   display: flex;
@@ -484,8 +492,10 @@ svg {
   border-radius: 9px;
   text-align: left;
 }
-.stat-card:hover {
-  border-color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .stat-card:hover {
+    border-color: var(--accent);
+  }
 }
 .stat-top {
   display: flex;
@@ -576,9 +586,11 @@ svg {
   border-bottom: 0;
   padding-bottom: 4px;
 }
-.update-mini:hover .mini-content strong,
-.event-mini:hover strong {
-  color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .update-mini:hover .mini-content strong,
+  .event-mini:hover strong {
+    color: var(--accent);
+  }
 }
 .mini-icon {
   width: 34px;
@@ -855,8 +867,10 @@ svg {
   border-radius: 5px;
   background: var(--surface);
 }
-.read-button:hover {
-  background: var(--accent-soft);
+@media (hover: hover) and (pointer: fine) {
+  .read-button:hover {
+    background: var(--accent-soft);
+  }
 }
 .empty {
   padding: 36px 20px;
@@ -928,8 +942,10 @@ svg {
   background: transparent;
   font-size: 12px;
 }
-.calendar-days button:hover {
-  background: var(--input);
+@media (hover: hover) and (pointer: fine) {
+  .calendar-days button:hover {
+    background: var(--input);
+  }
 }
 .calendar-days button.today {
   border-color: var(--border);
@@ -1007,8 +1023,10 @@ svg {
   border-radius: 7px;
   padding: 14px;
 }
-.upcoming-card:hover {
-  border-color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .upcoming-card:hover {
+    border-color: var(--accent);
+  }
 }
 .upcoming-card > span:nth-child(2) {
   display: grid;
@@ -1058,8 +1076,10 @@ svg {
   background: transparent;
   text-align: left;
 }
-.thread-item:hover {
-  background: var(--input);
+@media (hover: hover) and (pointer: fine) {
+  .thread-item:hover {
+    background: var(--input);
+  }
 }
 .thread-item.current {
   background: var(--accent-soft);
@@ -1200,7 +1220,7 @@ svg {
   background: transparent;
   color: var(--text);
   padding: 8px;
-  font-size: 13px;
+  font-size: max(var(--touch-input-font-min, 0px), 13px);
 }
 .message-compose button {
   width: 36px;
@@ -1448,7 +1468,7 @@ svg {
   border-radius: 6px;
   background: var(--surface);
   color: var(--text);
-  font-size: 13px;
+  font-size: max(var(--touch-input-font-min, 0px), 13px);
 }
 .compose-form textarea {
   resize: vertical;
@@ -1940,5 +1960,11 @@ svg {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+/* iOS zooms focused text controls below 16px; keep desktop and larger type. */
+@media (pointer: coarse) {
+  :root {
+    --touch-input-font-min: 16px;
   }
 }
